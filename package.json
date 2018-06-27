@@ -1,0 +1,27 @@
+{
+  "name": "ydoc-plugin-vue-styleguide",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "styleguide-server": "vue-styleguidist server --config styleguide.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "ydoc-plugin-vue-styleguide": "bin/ydoc-plugin-vue-styleguide"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.28.7",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "vue-loader": "^13.5.0",
+    "vue-styleguidist": "^1.7.10",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "shelljs": "^0.8.2"
+  }
+}

@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const shell = require('shelljs');
+const configPath = path.resolve(__dirname, '..');
+const configFilePath = path.resolve(configPath, 'styleguide.js');
+const fs = require('fs');
+const vueStyleGuide = require('vue-styleguidist')
+
+function forceDeleteConfig(){
+  try{
+    fs.unlinkSync(configFilePath);
+  }catch(err){
+    return ;
+  }
+}
+
+forceDeleteConfig()
+
+let time = 0;
+const getConfig = function(){
+  setTimeout(function(){
+    try{
+      time += 100;
+      if(time > 5000){
+        throw new Error('获取styleguide配置文件超时，请检查')
+      }
+      let config = require(configFilePath);
+      shell.cd(config.webpackConfig.context);
+      vueStyleGuide(config).server(
+        (err, config) => {
+          if (err) {
+            console.error(err)
+          } else {
+            //const url = `http://${config.serverHost}:${config.serverPort}`
+            console.log(`组件服务开启成功`)
+          }
+        }
+      )
+      
+    }catch(err){
+      getConfig()
+    }
+    
+  },100)
+}
+
+getConfig()
+
+
+
