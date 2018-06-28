@@ -1,6 +1,7 @@
 module.exports = function(context){
   return {
     context,
+    devtool: 'inline-source-map',
     module: {
       rules: [
         {

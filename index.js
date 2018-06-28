@@ -23,18 +23,39 @@ module.exports = {
     const dist = this.config.dist;
     const root = process.cwd ();
     const componentsPath = path.resolve (dist, 'components');
+
+    if(!this.options || !this.options.components){
+      throw new Error('必须在 ydoc-plugin-vue-styleguide 插件配置里配置 "components"');
+    }
+
+    if(!this.options.webpackConfigPath){
+      throw new Error('必须在ydoc-plugin-vue-styleguide 插件配置里配置 "webpackConfigPath"')
+    }
+
+    const webpackConfig = require(this.options.webpackConfigPath);
+    webpackConfig.context = root;
+
     const config = {
-      components: './components/Demo/index.vue',
+      components: this.options.components,
       styleguideDir: componentsPath,
-      webpackConfig: require('./webpack.config.js')(root),
+      webpackConfig,
     }
 
     
+
+    
     fs.writeFileSync(configFilepath, `
+      const webpackConfig = require("${this.options.webpackConfigPath}")
+      webpackConfig.context = "${root}"
       module.exports = {
+        logger: {
+          warn: console.warn,
+          info: console.log,
+          debug: console.log,
+        },
         "components": "${config.components}",
         "styleguideDir": "${config.styleguideDir}",
-        "webpackConfig": require('./webpack.config.js')("${root}")
+        webpackConfig
       }
     `);
 
@@ -55,7 +76,7 @@ module.exports = {
     } else {
       require ('fs').writeFileSync (
         path.resolve (componentsPath, indexFile),
-        `<iframe src="${'http://localhost:6060/'}" width="100%" height="100%" ></iframe>`
+        `<iframe src="${'http://localhost:6060/'}" style="border:none" width="100%" height="100%" ></iframe>`
       );
     }
   }
