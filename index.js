@@ -28,11 +28,7 @@ module.exports = {
       throw new Error('必须在 ydoc-plugin-vue-styleguide 插件配置里配置 "components"');
     }
 
-    if(!this.options.webpackConfigPath){
-      throw new Error('必须在ydoc-plugin-vue-styleguide 插件配置里配置 "webpackConfigPath"')
-    }
-
-    const webpackConfig = require(this.options.webpackConfigPath);
+    const webpackConfig = this.options.webpackConfigPath;
     webpackConfig.context = root;
 
     const config = {
@@ -40,25 +36,6 @@ module.exports = {
       styleguideDir: componentsPath,
       webpackConfig,
     }
-
-    
-
-    
-    fs.writeFileSync(configFilepath, `
-      const webpackConfig = require("${this.options.webpackConfigPath}")
-      webpackConfig.context = "${root}"
-      module.exports = {
-        logger: {
-          warn: console.warn,
-          info: console.log,
-          debug: console.log,
-        },
-        "components": "${config.components}",
-        "styleguideDir": "${config.styleguideDir}",
-        webpackConfig
-      }
-    `);
-
 
     const inst = styleguidist (config);
     const indexFile = 'index.html'
