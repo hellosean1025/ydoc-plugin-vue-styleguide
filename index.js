@@ -1,8 +1,7 @@
 const styleguidist = require ('vue-styleguidist');
 const path = require ('path');
-const fs = require('fs');
-const shell = require('shelljs')
-const configFilepath = path.resolve(__dirname, 'styleguide.js');
+const indexFile = 'index.html';
+const fs = require('fs')
 
 function runBuild (inst) {
   return new Promise ((resolve, reject) => {
@@ -22,36 +21,33 @@ module.exports = {
   init: async function () {
     const dist = this.config.dist;
     const root = process.cwd ();
-    const componentsPath = path.resolve (dist, 'components');
+    const componentsPath = path.resolve (dist, 'vue-components');
 
     if(!this.options || !this.options.components){
       throw new Error('必须在 ydoc-plugin-vue-styleguide 插件配置里配置 "components"');
     }
 
-    const webpackConfig = this.options.webpackConfigPath;
-    webpackConfig.context = root;
+    const config = this.options;
+    config.webpackConfig.context = root;
+    config.styleguideDir = componentsPath
+    try{
+      fs.mkdirSync(componentsPath);
+    }catch(err){ }
 
-    const config = {
-      components: this.options.components,
-      styleguideDir: componentsPath,
-      webpackConfig,
-    }
-
-    const inst = styleguidist (config);
-    const indexFile = 'index.html'
     if (process.env.NODE_ENV === 'production') {
+      const inst = styleguidist (config);
       await runBuild (inst);
-      let content = require ('fs').readFileSync (
+      let content = fs.readFileSync (
         path.resolve (componentsPath, indexFile),
         'utf8'
       );
       content = content.match (/<body>([\s\S]+?)<\/body>/i);
-      require ('fs').writeFileSync (
+      fs.writeFileSync (
         path.resolve (componentsPath, indexFile),
         content[1]
       );
     } else {
-      require ('fs').writeFileSync (
+      fs.writeFileSync (
         path.resolve (componentsPath, indexFile),
         `<iframe src="${'http://localhost:6060/'}" style="border:none" width="100%" height="100%" ></iframe>`
       );
