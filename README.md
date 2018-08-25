@@ -4,14 +4,36 @@
 
 ### 快速开始
 
-在项目目录下 install 插件：
+1.在项目目录下 install 插件：
 
 ```
 npm install ydoc-plugin-vue-styleguide
 
 ```
 
-在项目根目录 ydoc.js 中配置插件参数：
+2.在项目根目录 ydoc.js 中配置插件参数：
+
+```js
+module.exports = {
+  plugins: ['vue-styleguide'],
+  pluginsConfig: {
+    "vue-styleguide": {
+      'vue-styleguide': vueStyleguideOptions
+  }
+}
+```
+`vueStyleguideOptions` 配置请查看[官方文档](https://github.com/vue-styleguidist/vue-styleguidist/blob/master/docs/Configuration.md)
+
+3.在导航添加链接
+
+打开 docs/NAV.md，添加以下markdown:
+
+```markdown
+* [组件](/vue-components/index.html)
+```
+
+
+### Example
 
 ```js
 const webpackConfig = {
